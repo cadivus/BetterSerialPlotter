@@ -151,10 +151,14 @@ void SerialManager::read_serial(){
 }
 
 void SerialManager::parse_buffer(unsigned char* buff, size_t buff_len){
+    const std::regex unnamed_data_regex(
+            "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?([ \t][-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)*$"
+    );
+
     for (size_t i = 0; i < buff_len; i++){
         // if we got a newline character, (0x0a)
         if (buff[i] == 0x0a){
-            // if we haven't run through once, just note that, and 
+            // if we haven't run through once, just note that, and
             // then return to make sure we have clean data
             if (!read_once){
                 read_once = true;
@@ -162,12 +166,15 @@ void SerialManager::parse_buffer(unsigned char* buff, size_t buff_len){
             }
             // if we have run through once, send the full line to be parsed
             else{
-                std::vector<float> curr_data = parse_line(curr_line_buff);
-                gui->append_all_data(curr_data);
+                // Parse as unnamed data if regex matches
+                if (std::regex_match(curr_line_buff, unnamed_data_regex)) {
+                    std::vector<float> curr_data = parse_unnamed_data_line(curr_line_buff);
+                    gui->append_all_data(curr_data);
 
-                {
-                    std::lock_guard<std::mutex> lock(mtx);
-                    gui->PrintBuffer.push_back(curr_line_buff);
+                    {
+                        std::lock_guard<std::mutex> lock(mtx);
+                        gui->PrintBuffer.push_back(curr_line_buff);
+                    }
                 }
                 curr_line_buff.clear();
                 if (gui->verbose) std::cout << std::endl;
@@ -185,7 +192,7 @@ void SerialManager::parse_buffer(unsigned char* buff, size_t buff_len){
     }
 }
 
-std::vector<float> SerialManager::parse_line(std::string line){
+std::vector<float> SerialManager::parse_unnamed_data_line(std::string line){
     // std::cout << line << "\n";
 
     std::vector<float> curr_data;

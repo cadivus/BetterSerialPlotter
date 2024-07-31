@@ -66,7 +66,7 @@ public:
     /// parses a buffer received from a serial port read
     void parse_buffer(unsigned char* message, size_t buff_len);
     /// parses a single line received from the buffer
-    std::vector<float> parse_line(std::string line);
+    std::vector<float> parse_unnamed_data_line(std::string line);
 
     bool comport_valid();
 
