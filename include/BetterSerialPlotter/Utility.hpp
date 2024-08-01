@@ -71,6 +71,11 @@ struct DataInfo {
      void set_identifier(char identifier){identifier = identifier;}
 };
 
+struct NamedSerialData {
+    std::string name;
+    float data;
+};
+
 // void plot_data(const ScrollingData &data, int i);
 #ifdef __APPLE__
 std::vector<std::string> get_serial_ports();

@@ -129,6 +129,12 @@ void BSP::append_all_data(std::vector<float> curr_data){
     // std::cout << "end append\n";
 }
 
+void BSP::append_all_data(std::vector<NamedSerialData> curr_data){
+    for (const auto& data : curr_data) {
+        std::cout << "Name: " << data.name << ", Data: " << data.data << "\n";
+    }
+}
+
 std::optional<std::reference_wrapper<ScrollingData>> BSP::get_data(char identifier){
     for (auto &data : all_data){
         if (data.identifier == identifier){

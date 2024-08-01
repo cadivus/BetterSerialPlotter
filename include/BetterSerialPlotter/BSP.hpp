@@ -79,6 +79,7 @@ public:
     std::optional<std::reference_wrapper<ScrollingData>> get_data(char identifier);
     /// appends the vector of current data to the current data set. Need to make sure that this is working for any size of data
     void append_all_data(std::vector<float> curr_data);
+    void append_all_data(std::vector<NamedSerialData> curr_data);
 
     std::string get_name(char identifier);
     ImVec4 get_color(char identifier);
