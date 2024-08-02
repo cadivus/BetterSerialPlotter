@@ -135,7 +135,7 @@ void BSP::append_all_data(std::vector<NamedSerialData> curr_data){
     }
 }
 
-std::optional<std::reference_wrapper<ScrollingData>> BSP::get_data(char identifier){
+std::optional<std::reference_wrapper<ScrollingData>> BSP::get_data(std::string identifier){
     for (auto &data : all_data){
         if (data.identifier == identifier){
             return data;
@@ -145,12 +145,12 @@ std::optional<std::reference_wrapper<ScrollingData>> BSP::get_data(char identifi
     return std::nullopt; //ScrollingData();
 }
 
-std::string BSP::get_name(char identifier){
+std::string BSP::get_name(std::string identifier){
     auto found_it = all_data_info.find(identifier);
     return (found_it != all_data_info.end()) ? found_it->second.name : "";
 }
 
-ImVec4 BSP::get_color(char identifier){
+ImVec4 BSP::get_color(std::string identifier){
     auto found_it = all_data_info.find(identifier);
     return (found_it != all_data_info.end()) ? found_it->second.color : ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
