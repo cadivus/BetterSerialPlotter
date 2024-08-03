@@ -103,20 +103,16 @@ void BSP::append_all_data(std::vector<float> curr_data){
     std::lock_guard<std::mutex> lock(serial_manager.mtx);
 
     auto old_size = mutexed_all_data.size();
-    if (old_size != curr_data.size()){
-        if (old_size < curr_data.size()){
-            for (int i = old_size; i < curr_data.size(); i++){
-                mutexed_all_data.emplace_back();
-                mutexed_all_data[i].identifier = old_size+i;
-                if (all_data_info.find(mutexed_all_data[i].identifier) == all_data_info.end()){
-                    all_data_info[mutexed_all_data[i].identifier].set_name("data " + std::to_string(i));
-                    all_data_info[mutexed_all_data[i].identifier].color = plot_colors[i%plot_colors.size()];
-                }
-            }
-        }
-        else{
-            for (auto i = old_size-1; i > old_size - curr_data.size(); i--){
-                mutexed_all_data.erase(mutexed_all_data.begin()+i);
+    if (old_size < curr_data.size()){
+        for (int i = old_size; i < curr_data.size(); i++){
+            ScrollingData new_data;
+            std::string new_identifier = "data " + old_size+i;
+            new_data.identifier = new_identifier;
+
+            mutexed_all_data.emplace_back(new_data);
+            if (all_data_info.find(new_identifier) == all_data_info.end()){
+                all_data_info[new_identifier].set_name("data " + std::to_string(i));
+                all_data_info[new_identifier].color = plot_colors[i%plot_colors.size()];
             }
         }
     }
